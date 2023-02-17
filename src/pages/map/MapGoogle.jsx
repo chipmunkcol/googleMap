@@ -54,7 +54,7 @@ const MapGoogle = () => {
   };
 
   // opacity handler
-  const [markerOpacity, setMarkerOpacity] = useState(1);
+  const [markerOpacity, setMarkerOpacity] = useState(1.0);
   console.log("markerOpacity: ", markerOpacity);
 
   const options = {
@@ -113,7 +113,8 @@ const MapGoogle = () => {
                 setInputValue(e.target.value);
               }}
               onMouseUp={() => {
-                setMarkerOpacity((inputValue / 100).toFixed(1));
+                const op = (Number(inputValue) / 100).toFixed(1);
+                setMarkerOpacity(Number(op));
               }}
             />
           </Point>
@@ -185,10 +186,9 @@ const MapGoogle = () => {
                 position={position}
                 icon={{
                   url: "https://cdn.icon-icons.com/icons2/317/PNG/512/map-marker-icon_34392.png",
-                  scaledSize: 10,
-                  fillOpacity: { markerOpacity },
+                  scaledSize: { height: 30, width: 30 },
                 }}
-                opacity={markerOpacity}
+                options={{ opacity: center === position ? markerOpacity : 1 }}
                 onClick={() => {
                   markerHandler(position);
                 }}
