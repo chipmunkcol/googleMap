@@ -1,70 +1,64 @@
-# Getting Started with Create React App
+## react-google-maps/api \_prac
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 후기
 
-## Available Scripts
+    - docs 업데이트가 잘 안되어있어 사용하기 굉장히 불편함.
+    프로젝트 진행 하다가 kakao 같은 docs 잘되어있는 api로 변경 가능성 있음
 
-In the project directory, you can run:
+### History
 
-### `npm start`
+1. google map api 설치
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+   - @react-google-maps/api
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. 지도에 marker 찍기
 
-### `npm test`
+   - <MarkerF
+     position={position}
+     icon={{
+               url: 이미지URL,
+               scaledSize: { height: 30, width: 30 },
+           }}
+     options={{ opacity: 1 }} // marker option 넣기 개빡침
+     />
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+3. 지도에 line 긋기
 
-### `npm run build`
+   - <PolylineF 
+           options={lineBaseOptions}
+           />
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+     const lineBaseOptions = {
+     fillColor: "lightblue",
+     fillOpacity: 1,
+     strokeColor: "red",
+     strokeOpacity: 1,
+     strokeWeight: 4,
+     clickable: true,
+     draggable: false,
+     editable: false,
+     geodesic: false,
+     zIndex: 1,
+     };
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. 지도에 polygon 효과
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   - <PolygonF
+           options={polygonBaseOptions}
+           />
 
-### `npm run eject`
+     const polygonBaseOptions = {
+     fillColor: "lightblue",
+     fillOpacity: 1,
+     strokeColor: "black",
+     strokeOpacity: 1,
+     strokeWeight: 2,
+     clickable: true,
+     draggable: false,
+     editable: false,
+     geodesic: false,
+     zIndex: 1,
+     };
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+5. component 하나에 다 넣으니 내가 불편해서 리팩토링중
+   - recoil로 state 관리

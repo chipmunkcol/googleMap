@@ -61,29 +61,3 @@ export const option = {
   overviewMapControl: true,
   rotateControl: true,
 };
-
-export const options = {
-  fillColor: "lightblue",
-  fillOpacity: 1,
-  strokeColor: "red",
-  strokeOpacity: 1,
-  strokeWeight: 4,
-  clickable: true,
-  draggable: false,
-  editable: false,
-  geodesic: false,
-  zIndex: 1,
-};
-
-export const optionsPolygon = {
-  fillColor: "lightblue",
-  fillOpacity: 1,
-  strokeColor: "red",
-  strokeOpacity: 1,
-  strokeWeight: 2,
-  clickable: true,
-  draggable: false,
-  editable: false,
-  geodesic: false,
-  zIndex: 1,
-};
