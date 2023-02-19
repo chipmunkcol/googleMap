@@ -3,10 +3,12 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { lineOption } from "../../store/lineOption";
 import { opacity } from "../../store/opacity";
-import { position } from "../../store/path";
 import { polygonOption } from "../../store/polygonOption";
 import { polygonPositionState } from "../../store/polygonPositionState";
 import { positionState } from "../../store/positionState";
+import Marker from "./components/panel/Marker";
+import Line from "./components/panel/Line"
+import Polygon from "./components/panel/Polygon";
 
 const Panel = ({ panelHide }) => {
 
@@ -49,78 +51,32 @@ const Panel = ({ panelHide }) => {
   return (
     <Container1 isHide={panelHide}>
       <Points>Points</Points>
-      {position.marker.map((latLng, index) => (
-        <Point
-          key={index}
-          onClick={() => {
-            markerHandler(latLng);
-          }}
-          active={center === latLng ? true : false}
-        >
-          Point-{index + 1}
-          <Input
-            type="range"
-            value={center === latLng ? inputValue : 100}
-            onChange={(e) => {
-              setInputValue(e.target.value);
-            }}
-            onMouseUp={() => {
-              const op = (inputValue / 100).toFixed(1);
-              setMarkerOpacity(Number(op));
-            }}
-          />
-        </Point>
-      ))}
+      <Marker
+        markerHandler={markerHandler}
+        center={center}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        setMarkerOpacity={setMarkerOpacity}
+      />
       <Lines>Lines</Lines>
-      {position.line.map((latLng, index) => (
-        <Line
-          key={index}
-          onClick={() => {
-            polygonHandler(latLng);
-          }}
-          active={NotUpdatedCenter === latLng[0] ? true : false}
-        >
-          Line-{index + 1}
-          <Input
-            type="range"
-            value={NotUpdatedCenter === latLng[0] ? inputValue : 100}
-            onChange={(e) => {
-              setInputValue(e.target.value);
-            }}
-            onMouseUp={(e) => {
-              setOptionState({
-                ...optionState,
-                strokeOpacity: e.target.value / 100,
-              });
-            }}
-          />
-        </Line>
-      ))}
+      <Line
+        NotUpdatedCenter={NotUpdatedCenter}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        polygonHandler={polygonHandler}
+        optionState={optionState}
+        setOptionState={setOptionState}
+      />
+
       <Polygons>Polygons</Polygons>
-      {position.polygon.map((latLng, index) => (
-        <Polygon2
-          key={index}
-          onClick={() => {
-            polygonHandler(latLng);
-          }}
-          active={NotUpdatedCenter === latLng[0] ? true : false}
-        >
-          Polygon-{index + 1}
-          <Input
-            type="range"
-            value={NotUpdatedCenter === latLng[0] ? inputValue : 100}
-            onChange={(e) => {
-              setInputValue(e.target.value);
-            }}
-            onMouseUp={(e) => {
-              setOptionsPolygonState({
-                ...optionsPolygonState,
-                fillOpacity: e.target.value / 100,
-              });
-            }}
-          />
-        </Polygon2>
-      ))}
+      <Polygon
+        NotUpdatedCenter={NotUpdatedCenter}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        polygonHandler={polygonHandler}
+        optionsPolygonState={optionsPolygonState}
+        setOptionsPolygonState={setOptionsPolygonState}
+      />
     </Container1>
   );
 };
@@ -133,7 +89,7 @@ const Container1 = styled.div`
   transition: 1s;
 `;
 
-const Points = styled.div`
+export const Points = styled.div`
   width: 100%;
   height: 25px;
   padding-left: 10px;
@@ -142,7 +98,7 @@ const Points = styled.div`
   display: flex;
   align-items: center;
 `;
-const Point = styled.div`
+export const Point = styled.div`
   width: 100%;
   height: 40px;
   padding-left: 10px;
@@ -154,13 +110,13 @@ const Point = styled.div`
   font-weight: ${(props) => (props.active ? "bolder" : null)};
   background-color: ${(props) => (props.active ? "yellow" : null)};
 `;
-const Input = styled.input`
+export const Input = styled.input`
   width: 50%;
 `;
 
-const Lines = styled(Points)``;
-const Polygons = styled(Points)``;
-const Line = styled(Point)``;
-const Polygon2 = styled(Point)``;
+export const Lines = styled(Points)``;
+export const Polygons = styled(Points)``;
+export const Line2 = styled(Point)``;
+export const Polygon2 = styled(Point)``;
 
 export default Panel;
