@@ -2,7 +2,7 @@ import { atom } from "recoil";
 
 const initialState = 1.0;
 
-export const opacity = atom({
-  key: "opacity",
+export const opacityState = atom({
+  key: "opacityState",
   default: initialState,
 });

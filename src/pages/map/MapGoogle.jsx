@@ -1,19 +1,16 @@
 import styled from "styled-components";
-import { position } from "../../store/path";
-import { useState } from "react";
-import {
-  GoogleMap,
-  LoadScript,
-  MarkerF,
-  PolylineF,
-  PolygonF,
-} from "@react-google-maps/api";
+import { pathState, position } from "../../store/path";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { positionState } from "../../store/positionState";
 import { polygonPositionState } from "../../store/polygonPositionState";
 import { lineOption, lineBaseOptions } from "../../store/lineOption";
 import { polygonOption, polygonBaseOptions } from "../../store/polygonOption";
-import { opacity } from "../../store/opacity";
+import { opacity, opacityState } from "../../store/opacity";
+import Marker from "./components/mapGoogle/Marker";
+import Line from "./components/mapGoogle/Line";
+import Polygon from "./components/mapGoogle/Polygon";
+import { zoomState } from "../../store/zoom";
 
 const containerStyle = {
   width: "100%",
@@ -21,16 +18,14 @@ const containerStyle = {
 };
 
 const MapGoogle = ({ panelHide }) => {
-
-  const [center, setCenter] = useRecoilState(positionState)
-
-  // const [center, setCenter] = useState({
-  //   lat: 37.772,
-  //   lng: -122.214,
-  // });
+  const [position, setPosition] = useRecoilState(pathState);
+  const [center, setCenter] = useRecoilState(positionState);
+  const [zoom, setZoom] = useRecoilState(zoomState);
+  console.log("zoom: ", zoom);
 
   const markerHandler = (center) => {
     setCenter(center);
+    setZoom(15);
     setNotUpdatedCenter({
       lat: 37.772,
       lng: -122.214,
@@ -38,17 +33,16 @@ const MapGoogle = ({ panelHide }) => {
   };
 
   // line ploygon 중심값 구하기
-  const [NotUpdatedCenter, setNotUpdatedCenter] = useRecoilState(polygonPositionState)
-  // const [NotUpdatedCenter, setNotUpdatedCenter] = useState({
-  //   lat: 37.772,
-  //   lng: -122.214,
-  // });
+  const [NotUpdatedCenter, setNotUpdatedCenter] =
+    useRecoilState(polygonPositionState);
 
   let updatedCenter;
   let lat;
   let lng;
   const polygonHandler = (center) => {
+    console.log("center: ", center);
     setNotUpdatedCenter(center[0]);
+    setZoom(15);
     let sumLat = 0;
     let sumLng = 0;
     for (let i = 0; i < center.length; i++) {
@@ -63,12 +57,11 @@ const MapGoogle = ({ panelHide }) => {
   };
 
   // opacity handler
-  const markerOpacity = useRecoilValue(opacity);
+  const markerOpacity = useRecoilValue(opacityState);
 
   const optionState = useRecoilValue(lineOption);
 
-  const optionsPolygonState =
-    useRecoilValue(polygonOption)
+  const optionsPolygonState = useRecoilValue(polygonOption);
 
   return (
     <>
@@ -76,57 +69,33 @@ const MapGoogle = ({ panelHide }) => {
         <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API}>
           <GoogleMap
             mapContainerStyle={containerStyle}
-            center={center}
-            zoom={10}
-          // onZoomChanged={}
-          // options={option}
+            options={{ zoom: zoom, center: center }}
           >
-            {position.marker.map((position, index) => (
-              <MarkerF
-                key={index}
-                position={position}
-                icon={{
-                  url: "https://cdn.icon-icons.com/icons2/317/PNG/512/map-marker-icon_34392.png",
-                  scaledSize: { height: 30, width: 30 },
-                }}
-                options={{ opacity: center === position ? markerOpacity : 1 }}
-                onClick={() => {
-                  markerHandler(position);
-                }}
-              />
-            ))}
-            {position.line.map((position, index) => (
-              <PolylineF
-                key={index}
-                path={position}
-                options={
-                  NotUpdatedCenter === position[0] ? optionState : lineBaseOptions
-                }
-                onClick={() => {
-                  polygonHandler(position);
-                }}
-              />
-            ))}
+            <Marker
+              position={position}
+              center={center}
+              markerOpacity={markerOpacity}
+              markerHandler={markerHandler}
+            />
 
-            {position.polygon.map((position, index) => (
-              <PolygonF
-                key={index}
-                path={position}
-                options={
-                  NotUpdatedCenter === position[0]
-                    ? optionsPolygonState
-                    : polygonBaseOptions
-                }
-                onClick={() => {
-                  polygonHandler(position);
-                }}
-              />
-            ))}
+            <Line
+              position={position}
+              NotUpdatedCenter={NotUpdatedCenter}
+              optionState={optionState}
+              lineBaseOptions={lineBaseOptions}
+              polygonHandler={polygonHandler}
+            />
+
+            <Polygon
+              position={position}
+              NotUpdatedCenter={NotUpdatedCenter}
+              optionsPolygonState={optionsPolygonState}
+              polygonBaseOptions={polygonBaseOptions}
+              polygonHandler={polygonHandler}
+            />
           </GoogleMap>
         </LoadScript>
       </Container2>
-
-
     </>
   );
 };

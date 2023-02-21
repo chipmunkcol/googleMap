@@ -2,20 +2,22 @@ import { useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { lineOption } from "../../store/lineOption";
-import { opacity } from "../../store/opacity";
+import { opacity, opacityState } from "../../store/opacity";
 import { polygonOption } from "../../store/polygonOption";
 import { polygonPositionState } from "../../store/polygonPositionState";
 import { positionState } from "../../store/positionState";
 import Marker from "./components/panel/Marker";
-import Line from "./components/panel/Line"
+import Line from "./components/panel/Line";
 import Polygon from "./components/panel/Polygon";
+import { zoomState } from "../../store/zoom";
 
 const Panel = ({ panelHide }) => {
-
   const [center, setCenter] = useRecoilState(positionState);
+  const [zoom, setZoom] = useRecoilState(zoomState);
 
   const markerHandler = (center) => {
     setCenter(center);
+    setZoom(15);
     setNotUpdatedCenter({
       lat: 37.772,
       lng: -122.214,
@@ -23,13 +25,15 @@ const Panel = ({ panelHide }) => {
   };
 
   // line ploygon 중심값 구하기
-  const [NotUpdatedCenter, setNotUpdatedCenter] = useRecoilState(polygonPositionState)
+  const [NotUpdatedCenter, setNotUpdatedCenter] =
+    useRecoilState(polygonPositionState);
 
   let updatedCenter;
   let lat;
   let lng;
   const polygonHandler = (center) => {
     setNotUpdatedCenter(center[0]);
+    setZoom(15);
     let sumLat = 0;
     let sumLng = 0;
     for (let i = 0; i < center.length; i++) {
@@ -39,13 +43,14 @@ const Panel = ({ panelHide }) => {
     lat = sumLat / center.length;
     lng = sumLng / center.length;
     updatedCenter = { lat, lng };
-    console.log("updatedCenter: ", updatedCenter);
+    // console.log("updatedCenter: ", updatedCenter);
     setCenter(updatedCenter);
   };
 
-  const [optionState, setOptionState] = useRecoilState(lineOption)
-  const [optionsPolygonState, setOptionsPolygonState] = useRecoilState(polygonOption)
-  const [markerOpacity, setMarkerOpacity] = useRecoilState(opacity)
+  const [optionState, setOptionState] = useRecoilState(lineOption);
+  const [optionsPolygonState, setOptionsPolygonState] =
+    useRecoilState(polygonOption);
+  const [markerOpacity, setMarkerOpacity] = useRecoilState(opacityState);
   const [inputValue, setInputValue] = useState(100);
 
   return (
@@ -56,6 +61,7 @@ const Panel = ({ panelHide }) => {
         center={center}
         inputValue={inputValue}
         setInputValue={setInputValue}
+        markerOpacity={markerOpacity}
         setMarkerOpacity={setMarkerOpacity}
       />
       <Lines>Lines</Lines>
@@ -66,6 +72,8 @@ const Panel = ({ panelHide }) => {
         polygonHandler={polygonHandler}
         optionState={optionState}
         setOptionState={setOptionState}
+        markerOpacity={markerOpacity}
+        setMarkerOpacity={setMarkerOpacity}
       />
 
       <Polygons>Polygons</Polygons>
@@ -76,6 +84,8 @@ const Panel = ({ panelHide }) => {
         polygonHandler={polygonHandler}
         optionsPolygonState={optionsPolygonState}
         setOptionsPolygonState={setOptionsPolygonState}
+        markerOpacity={markerOpacity}
+        setMarkerOpacity={setMarkerOpacity}
       />
     </Container1>
   );
