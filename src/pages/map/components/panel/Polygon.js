@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { opacityState } from "../../../../store/opacity";
-import { pathState } from "../../../../store/path";
 import { pathPolygonState } from "../../../../store/pathPolygon";
 import { polygonPositionState } from "../../../../store/polygonPositionState";
 import { positionState } from "../../../../store/positionState";
@@ -12,7 +10,6 @@ const Polygon = () => {
   const [position, setPosition] = useRecoilState(pathPolygonState);
   const [center, setCenter] = useRecoilState(positionState);
   const [zoom, setZoom] = useRecoilState(zoomState);
-  const [markerOpacity, setMarkerOpacity] = useRecoilState(opacityState);
   const [NotUpdatedCenter, setNotUpdatedCenter] =
     useRecoilState(polygonPositionState);
 
@@ -36,25 +33,18 @@ const Polygon = () => {
   };
 
   // oapcity 객체별로 갖게하자
-  const [inputValue, setInputValue] = useState(100);
-
-  const updatePositinHandler = (path) => {
+  const updatePositinHandler = (e, path) => {
     const index = position?.findIndex((v) => v.path === path);
     let copy = [];
     position?.map((v, i) => {
       if (index !== i) {
         return copy.push(v);
       } else {
-        const update = { ...v, opacity: markerOpacity };
+        const update = { ...v, opacity: Number(e.target.value / 100) };
         return copy.push(update);
       }
     });
     setPosition(copy);
-  };
-
-  const updateOpacity = (e) => {
-    setInputValue(e.target.value);
-    setMarkerOpacity(Number(inputValue / 100));
   };
 
   return (
@@ -72,8 +62,7 @@ const Polygon = () => {
             type="range"
             value={value.opacity * 100}
             onChange={(e) => {
-              updateOpacity(e);
-              updatePositinHandler(value.path);
+              updatePositinHandler(e, value.path);
             }}
           />
         </Styled.Polygon2>
