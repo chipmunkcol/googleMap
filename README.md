@@ -13,6 +13,7 @@
 
 2. 지도에 marker 찍기
 
+```
    - <MarkerF
      position={position}
      icon={{
@@ -21,10 +22,12 @@
            }}
      options={{ opacity: 1 }} // marker option 넣기 개빡침
      />
+```
 
 3. 지도에 line 긋기
 
-   - <PolylineF 
+```
+   - <PolylineF
            options={lineBaseOptions}
            />
 
@@ -40,9 +43,11 @@
      geodesic: false,
      zIndex: 1,
      };
+```
 
 4. 지도에 polygon 효과
 
+```
    - <PolygonF
            options={polygonBaseOptions}
            />
@@ -59,6 +64,7 @@
      geodesic: false,
      zIndex: 1,
      };
+```
 
 5. component 하나에 다 넣으니 내가 불편해서 리팩토링중
 
@@ -73,6 +79,8 @@
 <summary>panel 객체별로 opacity 조정하는 로직</summary>
 
 생각보다 까다로웠음..
+
+```
 <input
 type="range"
 onchange={(e)=>updateOpacity(e); updateOpacityHandler(value);}
@@ -97,6 +105,7 @@ return copy.push(update);
 });
 setPosition(copy);
 };
+```
 
 </details>
 
