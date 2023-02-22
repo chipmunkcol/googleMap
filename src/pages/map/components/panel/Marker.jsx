@@ -1,21 +1,38 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { opacityState } from "../../../../store/opacity";
 import { pathState } from "../../../../store/path";
+import { polygonPositionState } from "../../../../store/polygonPositionState";
+import { positionState } from "../../../../store/positionState";
+import { zoomState } from "../../../../store/zoom";
 import * as Styled from "../../Panel";
 
-const Marker = ({
-  markerHandler,
-  center,
-  inputValue,
-  setInputValue,
-  // markerOpacity,
-  // setMarkerOpacity,
-}) => {
+const Marker = () => {
+  const [center, setCenter] = useRecoilState(positionState);
+  const [zoom, setZoom] = useRecoilState(zoomState);
   const [position, setPosition] = useRecoilState(pathState);
   const [markerOpacity, setMarkerOpacity] = useRecoilState(opacityState);
+  const [NotUpdatedCenter, setNotUpdatedCenter] =
+    useRecoilState(polygonPositionState);
 
-  const updatePositinHandler = (latLng) => {
+  //panel 클릭 시 Map center & zoom;
+  const markerHandler = (center) => {
+    setCenter(center);
+    setZoom(15);
+    // line polygon이랑 active 겹치지 않게 초기값 설정
+    setNotUpdatedCenter({ lat: 37.772, lng: -122.214 });
+  };
+
+  //oapcity 객체별로 갖게하자
+  const [inputValue, setInputValue] = useState(100);
+
+  //변경한 inputValue를 전역 opacityState 에 반영
+  const updateOpacity = (e) => {
+    setInputValue(e.target.value);
+    setMarkerOpacity(Number(inputValue / 100));
+  };
+  //위의 opacityState를 변경된 객체값에 반영
+  const updateOpacityHandler = (latLng) => {
     const index = position?.findIndex((v) => v.path === latLng.path);
     let copy = [];
     position?.map((v, i) => {
@@ -29,20 +46,12 @@ const Marker = ({
     setPosition(copy);
   };
 
-  // const updateOpacityHandler = (latLng) => {
-  //   const index = position?.findIndex((v) => v.path === latLng.path);
-  //   let copyArr = [...markerOpacity];
-  //   if(index !== -1) {
-  //     copyArr[index] = {...copyArr[index],}
-  //   }
-  // }
-
   return (
     <>
       {position?.map((value, index) => (
         <Styled.Point
           key={index}
-          onClick={() => {
+          onMouseDown={() => {
             markerHandler(value.path);
           }}
           active={center === value.path ? true : false}
@@ -50,17 +59,10 @@ const Marker = ({
           Point-{index + 1}
           <Styled.Input
             type="range"
-            value={value.opacity * 100}
+            value={value.opacity * 100} //이거 캐싱 뭐냐구~
             onChange={(e) => {
-              setInputValue(e.target.value);
-              updatePositinHandler(value);
-              const op = (inputValue / 100).toFixed(1);
-              setMarkerOpacity(Number(op));
-            }}
-            onMouseUp={() => {
-              // const op = (inputValue / 100).toFixed(1);
-              // setMarkerOpacity(Number(op));
-              // updatePositinHandler(value);
+              updateOpacity(e);
+              updateOpacityHandler(value);
             }}
           />
         </Styled.Point>

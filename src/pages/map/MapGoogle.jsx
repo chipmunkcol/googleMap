@@ -4,9 +4,7 @@ import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { positionState } from "../../store/positionState";
 import { polygonPositionState } from "../../store/polygonPositionState";
-import { lineOption, lineBaseOptions } from "../../store/lineOption";
-import { polygonOption, polygonBaseOptions } from "../../store/polygonOption";
-import { opacity, opacityState } from "../../store/opacity";
+import { opacityState } from "../../store/opacity";
 import Marker from "./components/mapGoogle/Marker";
 import Line from "./components/mapGoogle/Line";
 import Polygon from "./components/mapGoogle/Polygon";
@@ -56,13 +54,6 @@ const MapGoogle = ({ panelHide }) => {
     setCenter(updatedCenter);
   };
 
-  // opacity handler
-  const markerOpacity = useRecoilValue(opacityState);
-
-  const optionState = useRecoilValue(lineOption);
-
-  const optionsPolygonState = useRecoilValue(polygonOption);
-
   return (
     <>
       <Container2 isHide={panelHide}>
@@ -71,28 +62,11 @@ const MapGoogle = ({ panelHide }) => {
             mapContainerStyle={containerStyle}
             options={{ zoom: zoom, center: center }}
           >
-            <Marker
-              position={position}
-              center={center}
-              markerOpacity={markerOpacity}
-              markerHandler={markerHandler}
-            />
+            <Marker />
 
-            <Line
-              position={position}
-              NotUpdatedCenter={NotUpdatedCenter}
-              optionState={optionState}
-              lineBaseOptions={lineBaseOptions}
-              polygonHandler={polygonHandler}
-            />
+            <Line />
 
-            <Polygon
-              position={position}
-              NotUpdatedCenter={NotUpdatedCenter}
-              optionsPolygonState={optionsPolygonState}
-              polygonBaseOptions={polygonBaseOptions}
-              polygonHandler={polygonHandler}
-            />
+            <Polygon />
           </GoogleMap>
         </LoadScript>
       </Container2>

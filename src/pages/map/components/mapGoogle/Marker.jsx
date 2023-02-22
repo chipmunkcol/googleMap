@@ -1,11 +1,26 @@
 import { MarkerF } from "@react-google-maps/api";
-import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { pathState } from "../../../../store/path";
+import { polygonPositionState } from "../../../../store/polygonPositionState";
+import { positionState } from "../../../../store/positionState";
+import { zoomState } from "../../../../store/zoom";
 
-const Marker = ({ center, markerOpacity, markerHandler }) => {
+const Marker = () => {
   const [position, setPosition] = useRecoilState(pathState);
-  console.log("Mapposition: ", position);
+  const [center, setCenter] = useRecoilState(positionState);
+  const [zoom, setZoom] = useRecoilState(zoomState);
+  // line ploygon 중심값 구하기
+  const [NotUpdatedCenter, setNotUpdatedCenter] =
+    useRecoilState(polygonPositionState);
+
+  const markerHandler = (center) => {
+    setCenter(center);
+    setZoom(15);
+    setNotUpdatedCenter({
+      lat: 37.772,
+      lng: -122.214,
+    });
+  };
 
   return (
     <>

@@ -61,4 +61,46 @@
      };
 
 5. component 하나에 다 넣으니 내가 불편해서 리팩토링중
+
    - recoil로 state 관리
+   - 랜더링 고려해 전역 state는 각 컴포넌트안에서 호출
+   - 폴더구조변경
+
+</br>
+
+6. 👩‍💻트러블슈팅
+<details>
+<summary>panel 객체별로 opacity 조정하는 로직</summary>
+
+생각보다 까다로웠음..
+<input
+type="range"
+onchange={(e)=>updateOpacity(e); updateOpacityHandler(value);}
+/>
+input 변경에 따라 opacity값을 바꿔주고 변경 된 opacity를 해당 객체에 반영해주었음
+
+const updateOpacity = (e) => {
+setInputValue(e.target.value);
+setMarkerOpacity(Number(inputValue / 100));
+};
+//위의 opacityState를 변경된 객체값에 반영
+const updateOpacityHandler = (latLng) => {
+const index = position?.findIndex((v) => v.path === latLng.path);
+let copy = [];
+position?.map((v, i) => {
+if (index !== i) {
+return copy.push(v);
+} else {
+const update = { ...v, opacity: markerOpacity };
+return copy.push(update);
+}
+});
+setPosition(copy);
+};
+
+</details>
+
+</br>
+
+- 컴포넌트 쪼개서 전역 state 호출할때 충분히 고민 안하고 막 하니까 나중에 똥같은 코드들이 많이 생겼다.
+- 태그간에 숨겨진 값들 불러오는 ctrl + space 정말 꿀이다

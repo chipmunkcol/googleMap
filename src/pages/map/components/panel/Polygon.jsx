@@ -1,19 +1,42 @@
+import { useState } from "react";
 import { useRecoilState } from "recoil";
+import { opacityState } from "../../../../store/opacity";
 import { pathState } from "../../../../store/path";
 import { pathPolygonState } from "../../../../store/pathPolygon";
+import { polygonPositionState } from "../../../../store/polygonPositionState";
+import { positionState } from "../../../../store/positionState";
+import { zoomState } from "../../../../store/zoom";
 import * as Styled from "../../Panel";
 
-const Polygon = ({
-  NotUpdatedCenter,
-  inputValue,
-  setInputValue,
-  polygonHandler,
-  optionsPolygonState,
-  setOptionsPolygonState,
-  markerOpacity,
-  setMarkerOpacity,
-}) => {
+const Polygon = () => {
   const [position, setPosition] = useRecoilState(pathPolygonState);
+  const [center, setCenter] = useRecoilState(positionState);
+  const [zoom, setZoom] = useRecoilState(zoomState);
+  const [markerOpacity, setMarkerOpacity] = useRecoilState(opacityState);
+  const [NotUpdatedCenter, setNotUpdatedCenter] =
+    useRecoilState(polygonPositionState);
+
+  // line polygon 중심값 구하기
+  let lat;
+  let lng;
+  let updatedCenter;
+  const polygonHandler = (center) => {
+    setNotUpdatedCenter(center[0]); //클릭한 panel active 시켜주기 위한 코드(해당 state를 boolean으로 받고있음)
+    setZoom(15);
+    let sumLat = 0;
+    let sumLng = 0;
+    for (let i = 0; i < center.length; i++) {
+      sumLat += center[i].lat;
+      sumLng += center[i].lng;
+    }
+    lat = sumLat / center.length;
+    lng = sumLng / center.length;
+    updatedCenter = { lat, lng };
+    setCenter(updatedCenter);
+  };
+
+  // oapcity 객체별로 갖게하자
+  const [inputValue, setInputValue] = useState(100);
 
   const updatePositinHandler = (path) => {
     const index = position?.findIndex((v) => v.path === path);
@@ -26,8 +49,12 @@ const Polygon = ({
         return copy.push(update);
       }
     });
-    console.log("@@@@@@@@@@@@@@", copy);
     setPosition(copy);
+  };
+
+  const updateOpacity = (e) => {
+    setInputValue(e.target.value);
+    setMarkerOpacity(Number(inputValue / 100));
   };
 
   return (
@@ -35,7 +62,7 @@ const Polygon = ({
       {position?.map((value, index) => (
         <Styled.Polygon2
           key={index}
-          onClick={() => {
+          onMouseDown={() => {
             polygonHandler(value.path);
           }}
           active={NotUpdatedCenter === value.path[0] ? true : false}
@@ -45,12 +72,9 @@ const Polygon = ({
             type="range"
             value={value.opacity * 100}
             onChange={(e) => {
-              setInputValue(e.target.value);
+              updateOpacity(e);
               updatePositinHandler(value.path);
-              const op = (inputValue / 100).toFixed(1);
-              setMarkerOpacity(Number(op));
             }}
-            onMouseUp={(e) => {}}
           />
         </Styled.Polygon2>
       ))}

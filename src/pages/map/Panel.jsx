@@ -1,92 +1,19 @@
-import { useState } from "react";
-import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { lineOption } from "../../store/lineOption";
-import { opacity, opacityState } from "../../store/opacity";
-import { polygonOption } from "../../store/polygonOption";
-import { polygonPositionState } from "../../store/polygonPositionState";
-import { positionState } from "../../store/positionState";
 import Marker from "./components/panel/Marker";
 import Line from "./components/panel/Line";
 import Polygon from "./components/panel/Polygon";
-import { zoomState } from "../../store/zoom";
 
 const Panel = ({ panelHide }) => {
-  const [center, setCenter] = useRecoilState(positionState);
-  const [zoom, setZoom] = useRecoilState(zoomState);
-
-  const markerHandler = (center) => {
-    setCenter(center);
-    setZoom(15);
-    setNotUpdatedCenter({
-      lat: 37.772,
-      lng: -122.214,
-    });
-  };
-
-  // line ploygon 중심값 구하기
-  const [NotUpdatedCenter, setNotUpdatedCenter] =
-    useRecoilState(polygonPositionState);
-
-  let updatedCenter;
-  let lat;
-  let lng;
-  const polygonHandler = (center) => {
-    setNotUpdatedCenter(center[0]);
-    setZoom(15);
-    let sumLat = 0;
-    let sumLng = 0;
-    for (let i = 0; i < center.length; i++) {
-      sumLat += center[i].lat;
-      sumLng += center[i].lng;
-    }
-    lat = sumLat / center.length;
-    lng = sumLng / center.length;
-    updatedCenter = { lat, lng };
-    // console.log("updatedCenter: ", updatedCenter);
-    setCenter(updatedCenter);
-  };
-
-  const [optionState, setOptionState] = useRecoilState(lineOption);
-  const [optionsPolygonState, setOptionsPolygonState] =
-    useRecoilState(polygonOption);
-  const [markerOpacity, setMarkerOpacity] = useRecoilState(opacityState);
-  const [inputValue, setInputValue] = useState(100);
-
   return (
     <Container1 isHide={panelHide}>
       <Points>Points</Points>
-      <Marker
-        markerHandler={markerHandler}
-        center={center}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        markerOpacity={markerOpacity}
-        setMarkerOpacity={setMarkerOpacity}
-      />
+      <Marker />
+
       <Lines>Lines</Lines>
-      <Line
-        NotUpdatedCenter={NotUpdatedCenter}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        polygonHandler={polygonHandler}
-        optionState={optionState}
-        setOptionState={setOptionState}
-        markerOpacity={markerOpacity}
-        setMarkerOpacity={setMarkerOpacity}
-      />
+      <Line />
 
       <Polygons>Polygons</Polygons>
-      <Polygon
-        NotUpdatedCenter={NotUpdatedCenter}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        polygonHandler={polygonHandler}
-        optionsPolygonState={optionsPolygonState}
-        setOptionsPolygonState={setOptionsPolygonState}
-        markerOpacity={markerOpacity}
-        setMarkerOpacity={setMarkerOpacity}
-      />
+      <Polygon />
     </Container1>
   );
 };
@@ -122,6 +49,19 @@ export const Point = styled.div`
 `;
 export const Input = styled.input`
   width: 50%;
+  height: 3px;
+  background-color: gray;
+  cursor: pointer;
+  -webkit-appearance: none;
+
+  &::-webkit-slider-thumb {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    border: 2px solid #b0b0b0;
+    background-color: white;
+    -webkit-appearance: none;
+  }
 `;
 
 export const Lines = styled(Points)``;
