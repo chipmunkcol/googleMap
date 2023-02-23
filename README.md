@@ -83,23 +83,18 @@
 ```
 <input
 type="range"
-onchange={(e)=>updateOpacity(e); updateOpacityHandler(value);}
+onchange={(e)=> updateOpacityHandler(e, path);}
 />
-input 변경에 따라 opacity값을 바꿔주고 변경 된 opacity를 해당 객체에 반영해주었음
+input 변경 값을 해당 객체 opacity에 반영해주었음
 
-const updateOpacity = (e) => {
-setInputValue(e.target.value);
-setMarkerOpacity(Number(inputValue / 100));
-};
-//위의 opacityState를 변경된 객체값에 반영
-const updateOpacityHandler = (latLng) => {
-const index = position?.findIndex((v) => v.path === latLng.path);
+const updateOpacityHandler = (e, path) => {
+const index = position?.findIndex((v) => v.path === path);
 let copy = [];
 position?.map((v, i) => {
 if (index !== i) {
 return copy.push(v);
 } else {
-const update = { ...v, opacity: markerOpacity };
+const update = { ...v, opacity: e.target.value }; // useState 비동기인거 잊지말자.. input 값 바로 받아서 넣어서 버그 해결
 return copy.push(update);
 }
 });
